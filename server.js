@@ -3,8 +3,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 
 //APIS
-const index = require('./routes/index');
-const todo = require('./routes/todo');
+const index = require('./backend/routes/index');
+const todo = require('./backend/routes/todo');
 
 const port = 3000;
 const app = express();
