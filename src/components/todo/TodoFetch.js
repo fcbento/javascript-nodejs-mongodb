@@ -14,11 +14,10 @@ class TodoFetch {
         let headers = new Headers();
         headers.append(this.contentType, this.appJson);
 
-        fetch(this.url, {
-                method: this.methodPost,
-                body: JSON.stringify(todo),
-                headers: headers
-            })
+        fetch(this.url,{
+            method: this.methodPost,
+            body: JSON.stringify(todo),
+            headers: headers})
             .then(res => res.json())
             .catch(error => console.error('Error:', error));
     }
@@ -49,10 +48,10 @@ class TodoFetch {
         headers.append(this.contentType, this.appJson);
 
         const promise = fetch(`${this.url}/update/${todo._id}`, {
-                method: this.methodPut,
-                body: JSON.stringify(todo),
-                headers: headers
-            })
+            method: 'PATCH',
+            body: JSON.stringify(todo),
+            headers: headers
+        })
             .then(res => res.json())
             .catch(error => console.error('Error:', error));
         return promise;

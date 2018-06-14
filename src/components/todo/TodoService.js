@@ -1,19 +1,21 @@
 import TodoFetch from './TodoFetch.js';
 import Modules from '../../modules/Modules.js'
-import TodoModel from './TodoModel.js';
 
 const todoFetch = new TodoFetch();
 const modules = new Modules();
 
-class TodoService extends TodoModel {
+class TodoService {
 
     createTodo() {
 
         document.getElementById('createToDo').addEventListener('click', () => {
             const task = document.getElementById('todoTask').value;
             if (task) {
-                const todo = new TodoModel(task);
-                todoFetch.create(todo);
+                const todo = {
+                    task,
+                    createdAt: new Date().getTime()
+                }
+                todoFetch.create(task);
                 const notify = modules.displayNotification();
             } else {
                 this.notify = modules.displayDanger();

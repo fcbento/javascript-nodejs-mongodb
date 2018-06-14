@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const index = require('./backend/routes/index');
 const todo = require('./backend/routes/todo');
 
-const port = 3000;
 const app = express();
 const fallback = require('express-history-api-fallback');
 
@@ -19,10 +18,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //APIS
 app.use('/', index);
 app.use('/api', todo);
+
 //FALLBACK
 app.use(fallback(__dirname + '/dist/index.html'));
 
 //RUN
-app.listen(port, () => {
-    console.log('SERVER RUNNING PORT ' + port);
+app.listen(3000, () => {
+    console.log('SERVER RUNNING PORT');
 });

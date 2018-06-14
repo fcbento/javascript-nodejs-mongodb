@@ -1,41 +1,85 @@
-const mongojs = require('mongojs');
-const db = mongojs('mongodb://localhost:27017/todo', ['todos']);
+const { ObjectID } = require('mongodb');
+const _ = require('lodash');
+const fs = require('fs');
 
-controller = {};
+const { mongoose } = require('./../db/mongoose');
+const { Todo } = require('./../models/todo');
 
-controller.create = async (req, res) => {
-    const todo = req.body;
-    db.todos.save(todo, (err, todo) => {
-        if (err) { res.send(err); }
-        res.json(todo);
+const TodoDb = {};
+
+TodoDb.todoLogs = (todo) => {
+    let now = new Date().toString();
+    let log = `Todo: ${todo.task} created at ${now}`;
+    fs.appendFile('./logs/todo.log', log + '\n', (err) => {
+        if (err) {
+            console.log('Unable to append', err);
+        }
     });
 }
 
-controller.getAll = async (res) => {
-    db.todos.find((err, todos) => {
-        if (err) { res.send(err); }
-        res.json(todos);
+TodoDb.create = (req, res) => {
+
+    const todo = new Todo({
+        task: req.body.task
     });
-}
 
-controller.update = async (req, res) => {
-    const todo = req.body;
-    const upd = {};
-
-    upd.todoTask = todo.todoTask;
-    upd.todoIsDone = todo.todoIsDone;
-    upd.todoDate = todo.todoDate;
-
-    db.todos.update({ _id: mongojs.ObjectId(req.params.id) }, upd, (err, todo) => {
-        res.json(todo);
+    todo.save().then((result) => {
+        TodoDb.todoLogs(result);
+        return res.send(result);
+    }).catch((err) => {
+        console.log('err', err)
     });
-}
+};
 
-controller.delete = async (req, res) => {
-    db.todos.remove({ _id: mongojs.ObjectId(req.params.id) }, (err, todo) => {
-        if (err) { res.send(err); }
-        res.json(todo);
+TodoDb.getAll = (req, res) => {
+    Todo.find().then((todos) => {
+        res.send(todos);
+    }, (err) => {
+        res.status(400).send();
     });
-}
+};
 
-module.exports = controller;
+TodoDb.remove = (req, res) => {
+
+    const id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    Todo.findByIdAndRemove(id).then((todo) => {
+        if (!todo) {
+            return res.status(404).send();
+        }
+        res.send({ todo });
+    }).catch((err) => {
+        console.log(err)
+    });
+};
+
+TodoDb.update = (req, res) => {
+    const id = req.params.id;
+    const body = _.pick(req.body, ['task', 'isDone', 'completedAt']);
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    if (_.isBoolean(body.isDone) && body.isDone) {
+        body.completedAt = Date.now();
+    } else {
+        body.isDone = false;
+        body.completedAt = null;
+    }
+
+    Todo.findByIdAndUpdate(id, { $set: body }, { new: true }).then((todo) => {
+        if (!todo) {
+            return res.status(400).send();
+        }
+        res.send({ todo });
+    }).catch((e) => {
+        res.status(400).send();
+    })
+};
+
+module.exports = { TodoDb };

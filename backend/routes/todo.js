@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const dbTodo = require('../db/todo');
+const { TodoDb } = require('../db/todo');
 
-router.post('/todo', (req, res, next) => {
-    dbTodo.create(req, res);
+router.post('/todo', (req, res) => {
+    TodoDb.create(req, res);
 });
 
-router.get('/todo', (req, res, next) => {
-    dbTodo.getAll(res);
+router.get('/todo', (req, res) => {
+    TodoDb.getAll(req, res);
 });
 
-router.delete('/todo/:id', (req, res, next) => {
-    dbTodo.delete(req, res);
+router.delete('/todo/:id', (req, res) => {
+    TodoDb.remove(req, res);
 });
 
-router.put('/todo/update/:id', (req, res, next) => {
-    dbTodo(req, res);
+router.patch('/todo/:id', (req, res) => {
+    TodoDb.update(req, res);
 });
 
 module.exports = router;
