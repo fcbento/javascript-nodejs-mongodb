@@ -10,13 +10,12 @@ const app = express();
 const fallback = require('express-history-api-fallback');
 
 //SOME CONFIG
-app.set('views', path.join(__dirname, 'dist'));
-app.use(express.static(path.join(__dirname, 'dist')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
+app.set('views', path.join(__dirname, 'dist'));
+app.use(express.static(path.join(__dirname, 'dist')));
 //APIS
-app.use('/', index);
+//app.use('/', index);
 app.use('/api', todo);
 
 //FALLBACK
@@ -26,3 +25,5 @@ app.use(fallback(__dirname + '/dist/index.html'));
 app.listen(3000, () => {
     console.log('SERVER RUNNING PORT');
 });
+
+module.exports = { app }

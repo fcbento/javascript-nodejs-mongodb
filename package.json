@@ -15,7 +15,7 @@
     "webpack-cli": "^2.0.10"
   },
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.19.0",
     "bulma": "^0.6.2",
     "css-loader": "^0.28.10",
     "express": "^4.16.2",

@@ -18,13 +18,12 @@ TodoDb.todoLogs = (todo) => {
 }
 
 TodoDb.create = (req, res) => {
-
     const todo = new Todo({
         task: req.body.task
     });
 
     todo.save().then((result) => {
-        TodoDb.todoLogs(result);
+        //TodoDb.todoLogs(result);
         return res.send(result);
     }).catch((err) => {
         console.log('err', err)
